@@ -11,7 +11,7 @@ import java.util.List;
 @Dao
 public interface MyNotesDao {
 
-    final String NOTES_TABLE_NAME = "MyNotesTable";
+    final String NOTES_TABLE_NAME = "MyNoteEntity";
     final String UID_COLUMN = "uid";
     final String TITLE_COLUMN = "title";
 

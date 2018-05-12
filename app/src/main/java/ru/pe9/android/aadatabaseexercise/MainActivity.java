@@ -27,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
         noteBody = findViewById(R.id.noteBodyEditText);
         addNoteButton = findViewById(R.id.addNoteButton);
 
+        initializeRecyclerView();
     }
 
     private void initializeRecyclerView() {
