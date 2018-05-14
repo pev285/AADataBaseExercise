@@ -14,15 +14,16 @@ public interface MyNotesDao {
     final String NOTES_TABLE_NAME = "MyNoteEntity";
     final String UID_COLUMN = "uid";
     final String TITLE_COLUMN = "title";
+    final String TIME_COLUMN = "time";
 
-    @Query("SELECT * FROM " + NOTES_TABLE_NAME)
+    @Query("SELECT * FROM " + NOTES_TABLE_NAME + " ORDER BY " + TIME_COLUMN + " DESC")
     List<MyNoteEntity> getAllNotes();
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertAll(MyNoteEntity... entities);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insert(MyNoteEntity entities);
+    void insert(MyNoteEntity entity);
 
     @Delete
     void delete(MyNoteEntity entity);
@@ -39,4 +40,6 @@ public interface MyNotesDao {
     @Query("SELECT * FROM " + NOTES_TABLE_NAME + " WHERE " + UID_COLUMN + " IN (:userIds)")
     List<MyNoteEntity> loadAllByIds(int[] userIds);
 
+    @Query("SELECT " + UID_COLUMN + " FROM " + NOTES_TABLE_NAME + " WHERE " + TIME_COLUMN + " = :time AND " + TITLE_COLUMN + " LIKE :title LIMIT 1")
+    int getId(String title, long time);
 }

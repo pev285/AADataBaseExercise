@@ -10,13 +10,21 @@
     android:orientation="vertical"
     >
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Title"
-        android:padding="0dp"
-        android:layout_margin="0dp"
+    <LinearLayout
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         />
+
+
+    <!--<TextView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="Title"-->
+        <!--android:padding="0dp"-->
+        <!--android:layout_margin="0dp"-->
+        <!--/>-->
 
     <EditText
         android:id="@+id/noteTitleEditText"
@@ -25,13 +33,13 @@
         android:hint="Title"
         />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Body"
-        android:padding="0dp"
-        android:layout_margin="0dp"
-        />
+    <!--<TextView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="Body"-->
+        <!--android:padding="0dp"-->
+        <!--android:layout_margin="0dp"-->
+        <!--/>-->
 
     <EditText
         android:id="@+id/noteBodyEditText"
@@ -51,6 +59,7 @@
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/notesRecyclerView"
+        android:layout_marginTop="6dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         />

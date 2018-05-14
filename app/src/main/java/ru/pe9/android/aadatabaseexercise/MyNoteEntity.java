@@ -9,11 +9,15 @@ public class MyNoteEntity {
     @PrimaryKey(autoGenerate = true)
     private int uid;
 
+    @ColumnInfo(name="time")
+    private long time;
+
     @ColumnInfo(name="title")
     private String title;
 
     @ColumnInfo(name="noteBody")
     private String noteBody;
+
 
 
     public int getUid() {
@@ -40,14 +44,23 @@ public class MyNoteEntity {
         this.noteBody = noteBody;
     }
 
-    public MyNoteEntity(String title, String noteBody) {
-        this(0, title, noteBody);
+    public long getTime() {
+        return time;
     }
 
-    private MyNoteEntity(int uid, String title, String noteBody) {
-        this.uid = uid;
+    public void setTime(long time) {
+        this.time = time;
+    }
+
+    public MyNoteEntity( long time, String title, String noteBody) {
+//        this.uid = uid;
+        this.time = time;
         this.title = title;
         this.noteBody = noteBody;
+    }
+
+    public static MyNoteEntity test(String title, String noteBody) {
+        return new MyNoteEntity(0, title, noteBody);
     }
 
 } // MyNoteEntity ///
