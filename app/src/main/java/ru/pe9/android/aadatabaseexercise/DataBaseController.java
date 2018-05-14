@@ -1,49 +1,95 @@
 package ru.pe9.android.aadatabaseexercise;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Looper;
 import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class DataBaseController {
 
 //    private Context context;
-    private MyApplicationDatabase dbInstance;
-    private MyNotesDao dao;
+//    private MyApplicationDatabase dbInstance;
+    private final MyNotesDao dao;
+
+    private final HandlerThread handlerThread;
+    private final Handler handler;
 
     public DataBaseController(Context context) {
 //        this.context = context;
         MyApplicationDatabase dbInstance = MyApplicationDatabase.getInstance(context);
         this.dao = dbInstance.getMyNotesDao();
+
+        handlerThread = new HandlerThread("DB operations handler thread");
+        handlerThread.start();
+        Looper looper = handlerThread.getLooper();
+        handler = new Handler(looper);
+    }
+
+    public void onDestroy() {
+        if (handlerThread != null) {
+            handlerThread.quit();
+        }
     }
 
 
-    public void Delete(MyNoteEntity note) {
-        dao.delete(note);
+    // DB Operations //////
+
+    public void delete(MyNoteEntity note) {
+        final MyNoteEntity localNote = note;
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                dao.delete(localNote);
+            }
+        });
     }
 
-    public void Add(MyNoteEntity note) {
-        dao.insert(note);
+    public void add(final MyNoteEntity note) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                long id = dao.insert(note);
+                note.setUid(id);
+            }
+        });
+
     }
 
 
-    public List<MyNoteEntity> getNotesFromDatabase() {
-        return dao.getAllNotes();
+    public void getNotesFromDatabase(final IAction<List<MyNoteEntity>> putDataToRecyclerView) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+               List<MyNoteEntity> notes = dao.getAllNotes();
+               putDataToRecyclerView.action(notes);
+            }
+        });
     }
 
     public void clearDataBase() {
-        dao.deleteAll();
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                dao.deleteAll();
+            }
+        });
     }
 
-    public int getId(MyNoteEntity note) {
-        return dao.getId(note.getTitle(), note.getTime());
-    }
+//    public int getId(MyNoteEntity note) {
+//        return dao.getId(note.getTitle(), note.getTime());
+//    }
+
 
 
 //////////////////////////////////////////////////////////////////////////
-
+/*
 
 
     private List<MyNoteEntity> getTestNotes() {
@@ -80,7 +126,7 @@ public class DataBaseController {
         );
     }
 
-
+*/
 
 
 }

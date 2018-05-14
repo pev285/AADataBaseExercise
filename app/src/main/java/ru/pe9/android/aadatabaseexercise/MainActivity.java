@@ -6,14 +6,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
-import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -48,39 +45,48 @@ public class MainActivity extends AppCompatActivity {
         initializeRecyclerView();
     } // onCreate() /////////
 
-//    @Override
-//    protected void onStart() {
-//        super.onStart();
-//        AsyncTask<Integer, Integer, Integer> asyncTask = new AsyncTask<Integer, Integer, Integer>() {
-//            @Override
-//            protected Integer doInBackground(Integer[] objects) {
-//                try {
-//                    Thread.sleep(500);
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-//                return null;
-//            }
-//            @Override
-//            protected void onPostExecute(Integer o) {
-//                super.onPostExecute(o);
-//                hideKeyboard();
-//            }
-//        };
-//
-//        asyncTask.execute(1);
-//    } // onStart() ////
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        dbController.onDestroy();
+    }
+
+        @Override
+    protected void onStart() {
+        super.onStart();
+        AsyncTask<Integer, Integer, Integer> asyncTask = new AsyncTask<Integer, Integer, Integer>() {
+            @Override
+            protected Integer doInBackground(Integer[] objects) {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+            @Override
+            protected void onPostExecute(Integer o) {
+                super.onPostExecute(o);
+                hideKeyboard();
+            }
+        };
+
+        asyncTask.execute(1);
+    } // onStart() ////
 
     private void initializeRecyclerView() {
-        RecyclerView recyclerView = findViewById(R.id.notesRecyclerView);
+        final RecyclerView recyclerView = findViewById(R.id.notesRecyclerView);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
-//        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, true);
         recyclerView.setLayoutManager(layoutManager);
 
-        recyclerViewAdapter = new MyNoteEntityListAdapter(dbController.getNotesFromDatabase(), dbController);
-        recyclerView.setAdapter(recyclerViewAdapter);
-
-//        recyclerView.scrollToPosition(0);
+        dbController.getNotesFromDatabase(new IAction<List<MyNoteEntity>>() {
+            @Override
+            public void action(List<MyNoteEntity> myNoteEntities) {
+                recyclerViewAdapter = new MyNoteEntityListAdapter(myNoteEntities, dbController);
+                recyclerView.setAdapter(recyclerViewAdapter);
+            }
+        });
     }
 
     private void onAddNoteButtonClick() {
@@ -89,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
         String body = noteBody.getText().toString();
 
         if (!title.isEmpty() || !body.isEmpty()) {
-            recyclerViewAdapter.AddItem(new MyNoteEntity(time, title, body));
+            recyclerViewAdapter.addItem(new MyNoteEntity(time, title, body));
 
             noteTitle.setText("");
             noteBody.setText("");

@@ -5,19 +5,15 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.accessibility.AccessibilityManager;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
 import java.util.List;
 
 public class MyNoteEntityListAdapter extends RecyclerView.Adapter<MyNoteEntityListAdapter.MyNoteListItemHolder> {
 
-    private DataBaseController dataBaseController = null;
-
-    private View.OnClickListener internalOnClickListener = null;
-
+    private final DataBaseController dataBaseController;
+    private final View.OnClickListener internalOnClickListener;
     private RecyclerView myLastRecyclerView = null;
 
     @NonNull
@@ -42,8 +38,8 @@ public class MyNoteEntityListAdapter extends RecyclerView.Adapter<MyNoteEntityLi
 
     static class MyNoteListItemHolder extends  RecyclerView.ViewHolder{
 
-        private TextView noteTitleView;
-        private TextView noteBodyView;
+        private final TextView noteTitleView;
+        private final TextView noteBodyView;
 
         public MyNoteListItemHolder(View itemView) {
             super(itemView);
@@ -71,22 +67,20 @@ public class MyNoteEntityListAdapter extends RecyclerView.Adapter<MyNoteEntityLi
             @Override
             public void onClick(View v) {
                 MyNoteEntity entity = (MyNoteEntity) v.getTag();
-                DeleteItem(entity);
+                deleteItem(entity);
             }
         };
     } // Constructior //
 
-    private void DeleteItem(MyNoteEntity entity) {
+    private void deleteItem(MyNoteEntity entity) {
         int position = notes.indexOf(entity);
-        dataBaseController.Delete(entity);
+        dataBaseController.delete(entity);
         notes.remove(position);
         notifyItemRemoved(position);
     }
 
-    public void AddItem(MyNoteEntity entity) {
-        dataBaseController.Add(entity);
-        int id = dataBaseController.getId(entity);
-        entity.setUid(id);
+    public void addItem(MyNoteEntity entity) {
+        dataBaseController.add(entity);
 
 //        notes.add(entity);
 //        notifyItemInserted(notes.size()-1);
@@ -96,7 +90,6 @@ public class MyNoteEntityListAdapter extends RecyclerView.Adapter<MyNoteEntityLi
         if (myLastRecyclerView != null) {
             myLastRecyclerView.scrollToPosition(0);
         }
-
     }
 
 
@@ -106,5 +99,9 @@ public class MyNoteEntityListAdapter extends RecyclerView.Adapter<MyNoteEntityLi
         myLastRecyclerView = recyclerView;
     }
 
-
+    @Override
+    public void onDetachedFromRecyclerView(@NonNull RecyclerView recyclerView) {
+        super.onDetachedFromRecyclerView(recyclerView);
+        myLastRecyclerView = null;
+    }
 } // end of class //

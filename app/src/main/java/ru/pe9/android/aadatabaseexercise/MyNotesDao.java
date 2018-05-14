@@ -20,10 +20,10 @@ public interface MyNotesDao {
     List<MyNoteEntity> getAllNotes();
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertAll(MyNoteEntity... entities);
+    long[] insertAll(MyNoteEntity... entities);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insert(MyNoteEntity entity);
+    long insert(MyNoteEntity entity);
 
     @Delete
     void delete(MyNoteEntity entity);
